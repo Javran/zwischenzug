@@ -1,0 +1,22 @@
+{
+  "name": "leetcode-zwischenzug",
+  "version": "0.0.1",
+  "description": "testing & debugging utilities for LeetCode",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Javran/zwischenzug.git"
+  },
+  "keywords": [
+    "LeetCode"
+  ],
+  "author": "Javran Cheng <Javran.C@gmail.com> (https://github.com/Javran)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Javran/zwischenzug/issues"
+  },
+  "homepage": "https://github.com/Javran/zwischenzug#readme"
+}
