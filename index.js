@@ -17,6 +17,11 @@ function NestedInteger(xs) {
   this.xs = xs
 }
 
+function Interval(start, end) {
+  this.start = start
+  this.end = end
+}
+
 NestedInteger.prototype.isInteger = function() {
   return !Array.isArray(this.xs)
 }
@@ -107,6 +112,7 @@ module.exports = {
   TreeNode,
   TreeLinkNode,
   NestedInteger,
+  Interval,
 
   mkTree,
   treeToStr,
