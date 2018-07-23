@@ -1,3 +1,5 @@
+const assert = require('assert')
+
 function TreeNode(val) {
   this.val = val
   this.left = this.right = null
@@ -108,6 +110,66 @@ const randomIntGenBetween = (min, max) => {
     Math.floor(Math.random() * range) + min
 }
 
+/*
+   consoleTest(<func>[,tag: string])(...input)([expected value])
+ */
+const consoleTest = (f, tag = null) => (...inps) => expected => {
+  const prefix = tag ? `${tag}: ` : ''
+  const timeTag = tag ? `${f.name}(${tag})` : f.name
+  console.time(timeTag)
+  const actual = f.apply(null, inps)
+  console.timeEnd(timeTag)
+  if (typeof expected !== 'undefined') {
+    try {
+      assert.deepStrictEqual(actual, expected)
+    } catch (_e) {
+      console.error(`${prefix}[FAILED] expected: ${expected}, actual: ${actual}`)
+    }
+  } else {
+    console.log(`${prefix}result: ${actual}`)
+  }
+}
+
+/*
+   shorthand for list generation instead of the super verbose randomIntGenBetween.
+
+   - random list of length ranged [1,20], with value being ranged [-10,20]:
+
+     genList({l: 1, r: 20}, {l: -10, r: 20})
+
+   - random list of fixed length 1000, with value being ranged [-10,20]:
+
+     genList(1000, {l: -10, r: 20})
+
+   - (not very) random list of length ranged [1,20], with every value being 10
+
+     genList({l: 1, r: 20}, 10)
+
+   - (not very) random list of fixed length 1000, with every value being 10
+
+     genList(1000, 10)
+
+ */
+const genList = (lenRange, valRange) => {
+  const gLen =
+    typeof lenRange === 'object' ?
+      randomIntGenBetween(lenRange.l, lenRange.r) :
+      (() => lenRange)
+  const g =
+    typeof valRange === 'object' ?
+      randomIntGenBetween(valRange.l, valRange.r) :
+      (() => valRange)
+  const sz = gLen()
+  const ret = new Array(sz)
+  for (let i = 0; i < sz; ++i)
+    ret[i] = g()
+  return ret
+}
+/*
+   shorthand for generating a random integer instead using the super verbose randomIntGenBetween
+ */
+const genInt = (l, r) = randomIntGenBetween(l,r)()
+
 module.exports = {
   TreeNode,
   TreeLinkNode,
@@ -120,4 +182,7 @@ module.exports = {
   isTreeEqual,
 
   randomIntGenBetween,
+  consoleTest,
+  genList,
+  genInt,
 }
