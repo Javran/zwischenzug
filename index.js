@@ -168,7 +168,7 @@ const genList = (lenRange, valRange) => {
 /*
    shorthand for generating a random integer instead using the super verbose randomIntGenBetween
  */
-const genInt = (l, r) = randomIntGenBetween(l,r)()
+const genInt = (l, r) => randomIntGenBetween(l,r)()
 
 module.exports = {
   TreeNode,
