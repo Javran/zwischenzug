@@ -10,6 +10,8 @@ function TreeLinkNode(val) {
   this.left = this.right = this.next = null
 }
 
+// TODO: ListNode utils
+
 function ListNode(val) {
   this.val = val
   this.next = null
@@ -175,6 +177,7 @@ module.exports = {
   TreeLinkNode,
   NestedInteger,
   Interval,
+  ListNode,
 
   mkTree,
   treeToStr,
