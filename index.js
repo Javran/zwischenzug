@@ -125,11 +125,33 @@ const consoleTest = (f, tag = null) => (...inps) => expected => {
     try {
       assert.deepStrictEqual(actual, expected)
     } catch (_e) {
-      console.error(`${prefix}[FAILED] expected: ${expected}, actual: ${actual}`)
+      console.error(`${prefix}[FAILED]`)
+      console.error('expected:')
+      console.error(expected)
+      console.error('actual:')
+      console.error(actual)
     }
   } else {
-    console.log(`${prefix}result: ${actual}`)
+    console.log(`${prefix}result:`)
+    console.log(actual)
   }
+}
+
+const mkListNode = xs => {
+  const pre = {next: null}
+  let cur = pre
+  for (let i = 0; i < xs.length; ++i) {
+    cur.next = new ListNode(xs[i])
+    cur = cur.next
+  }
+  return pre.next
+}
+
+const listNodeToArray = l => {
+  const ret = []
+  for (let cur = l; cur; cur = cur.next)
+    ret.push(cur.val)
+  return ret
 }
 
 /*
@@ -178,6 +200,8 @@ module.exports = {
   NestedInteger,
   Interval,
   ListNode,
+  mkListNode,
+  listNodeToArray,
 
   mkTree,
   treeToStr,
