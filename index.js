@@ -38,49 +38,42 @@ NestedInteger.prototype.getList = function() {
   return Array.isArray(this.xs) ? this.xs.map(x => new NestedInteger(x)) : null
 }
 
+function QNode(v) {
+  this.v = v
+  this.next = null
+}
+
 const mkTree = xs => {
   if (!Array.isArray(xs) || xs.length === 0)
     return null
 
-  const {next, isNothing} = (() => {
-    let i = 0
-    const nothing = {}
-    const isNothing = v => v === nothing
-    const next = () => {
-      if (i >= xs.length)
-        return nothing
-      const ret = xs[i]
-      ++i
-      return ret
-    }
-    return {next, isNothing}
-  })()
+  let i = 0
+  const nextItem = () => {
+    if (i >= xs.length)
+      return null
+    const ret = xs[i]
+    ++i
+    return ret
+  }
 
-  const root = new TreeNode(next())
-  let currentLevel = [root]
-  let nextLevel = []
-
-  while (currentLevel.length > 0) {
-    for (let i = 0; i < currentLevel.length; ++i) {
-      const lVal = next()
-      if (isNothing(lVal))
-        return root
-      if (lVal && !isNothing(lVal)) {
-        const newNode = new TreeNode(lVal)
-        currentLevel[i].left = newNode
-        nextLevel.push(newNode)
-      }
-      const rVal = next()
-      if (isNothing(rVal))
-        return root
-      if (rVal && !isNothing(rVal)) {
-        const newNode = new TreeNode(rVal)
-        currentLevel[i].right = newNode
-        nextLevel.push(newNode)
-      }
+  const root = new TreeNode(nextItem())
+  let qHead = new QNode(root)
+  let qTail = qHead
+  while (qHead) {
+    const cur = qHead.v
+    const itemL = nextItem()
+    if (itemL !== null) {
+      cur.left = new TreeNode(itemL)
+      qTail.next = new QNode(cur.left)
+      qTail = qTail.next
     }
-    currentLevel = nextLevel
-    nextLevel = []
+    const itemR = nextItem()
+    if (itemR !== null) {
+      cur.right = new TreeNode(itemR)
+      qTail.next = new QNode(cur.right)
+      qTail = qTail.next
+    }
+    qHead = qHead.next
   }
   return root
 }
@@ -93,6 +86,8 @@ const treeToStr = t => {
 
 const printTree = t =>
   console.log(treeToStr(t))
+
+// TODO: check printTree(mkTree([3,0,4,null,2,null,null,1]))
 
 const isTreeEqual = (t1, t2) => {
   if (t1 === t2)
