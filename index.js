@@ -106,22 +106,30 @@ const randomIntGenBetween = (min, max) => {
 }
 
 /*
-   consoleTest(<func>)(...input)([expected value])
+   consoleTest(<func>[, assertEqual = assert.deepStrictEqual])(...input)([expected value])
+
+   you can overwrite assertEqual if you want to customize the way results are compared.
+   note that your assertEqual MUST throw an error when the result is unexpected,
+   otherwise the result will be ignored
  */
-const consoleTest = f => (...inps) => expected => {
+const consoleTest = (f, assertEqual = assert.deepStrictEqual) => (...inps) => expected => {
   const timeTag = f.name
   console.time(timeTag)
   const actual = f.apply(null, inps)
   console.timeEnd(timeTag)
   if (typeof expected !== 'undefined') {
     try {
-      assert.deepStrictEqual(actual, expected)
-    } catch (_e) {
+      assertEqual(actual, expected)
+    } catch (e) {
       console.error(`[FAILED]`)
       console.error('expected:')
       console.error(expected)
       console.error('actual:')
       console.error(actual)
+      if (assertEqual !== assert.deepStrictEqual) {
+        console.error(`error:`)
+        console.error(e)
+      }
     }
   } else {
     console.log(`Result:`)
