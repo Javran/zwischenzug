@@ -106,11 +106,10 @@ const randomIntGenBetween = (min, max) => {
 }
 
 /*
-   consoleTest(<func>[,tag: string])(...input)([expected value])
+   consoleTest(<func>)(...input)([expected value])
  */
-const consoleTest = (f, tag = null) => (...inps) => expected => {
-  const prefix = tag ? `${tag}: ` : ''
-  const timeTag = tag ? `${f.name}(${tag})` : f.name
+const consoleTest = f => (...inps) => expected => {
+  const timeTag = f.name
   console.time(timeTag)
   const actual = f.apply(null, inps)
   console.timeEnd(timeTag)
@@ -118,14 +117,14 @@ const consoleTest = (f, tag = null) => (...inps) => expected => {
     try {
       assert.deepStrictEqual(actual, expected)
     } catch (_e) {
-      console.error(`${prefix}[FAILED]`)
+      console.error(`[FAILED]`)
       console.error('expected:')
       console.error(expected)
       console.error('actual:')
       console.error(actual)
     }
   } else {
-    console.log(`${prefix}result:`)
+    console.log(`Result:`)
     console.log(actual)
   }
 }
