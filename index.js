@@ -10,8 +10,6 @@ function TreeLinkNode(val) {
   this.left = this.right = this.next = null
 }
 
-// TODO: ListNode utils
-
 function ListNode(val) {
   this.val = val
   this.next = null
@@ -184,6 +182,7 @@ const genList = (lenRange, valRange) => {
     ret[i] = g()
   return ret
 }
+
 /*
    shorthand for generating a random integer instead using the super verbose randomIntGenBetween
  */
