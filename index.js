@@ -106,13 +106,16 @@ const randomIntGenBetween = (min, max) => {
 }
 
 /*
-   consoleTest(<func>[, assertEqual = assert.deepStrictEqual])(...input)([expected value])
+   cTestFunc(<func>[, assertEqual = assert.deepStrictEqual])(...input)([expected value])
 
    you can overwrite assertEqual if you want to customize the way results are compared.
    note that your assertEqual MUST throw an error when the result is unexpected,
    otherwise the result will be ignored
+
+   NOTE: old name is consoleTest, in order not to mess up auto completion of "console.xxxx",
+   I figure it's best not to use the same prefix
  */
-const consoleTest = (f, assertEqual = assert.deepStrictEqual) => (...inps) => expected => {
+const cTestFunc = (f, assertEqual = assert.deepStrictEqual) => (...inps) => expected => {
   const timeTag = f.name
   console.time(timeTag)
   const actual = f.apply(null, inps)
@@ -134,6 +137,52 @@ const consoleTest = (f, assertEqual = assert.deepStrictEqual) => (...inps) => ex
   } else {
     console.log(`Result:`)
     console.log(actual)
+  }
+}
+
+// compat
+const consoleTest = cTestFunc
+
+/*
+   cTestImpl(<mkFunc>[, assertEqual = assert.deepStrictEqual])
+     (<Array of commands>, <Array of argument list>)
+     ([expected value])
+ */
+const cTestImpl =
+  (mkFunc, assertEqual = assert.deepStrictEqual) => (cmds, argLists) => expected => {
+  const fName = mkFunc.name
+  let obj = null
+  const ans = []
+
+  console.time(fName)
+  for (let i = 0; i < cmds.length; ++i) {
+    const cmd = cmds[i]
+    if (cmd === fName) {
+      obj = new mkFunc(...argLists[i])
+      ans.push(null)
+    } else {
+      const ret = obj[cmd].apply(obj, [...argLists[i]])
+      ans.push(ret || null)
+    }
+  }
+  console.timeEnd(fName)
+  if (typeof expected !== 'undefined') {
+    try {
+      assertEqual(ans, expected)
+    } catch (e) {
+      console.error(`[FAILED]`)
+      console.error('expected:')
+      console.error(JSON.stringify(expected))
+      console.error('actual:')
+      console.error(JSON.stringify(ans))
+      if (assertEqual !== assert.deepStrictEqual) {
+        console.error(`error:`)
+        console.error(e)
+      }
+    }
+  } else {
+    console.log(`Result:`)
+    console.log(JSON.stringify(ans))
   }
 }
 
@@ -210,7 +259,11 @@ module.exports = {
   isTreeEqual,
 
   randomIntGenBetween,
+
   consoleTest,
+  cTestFunc,
+  cTestImpl,
+
   genList,
   genInt,
 }
